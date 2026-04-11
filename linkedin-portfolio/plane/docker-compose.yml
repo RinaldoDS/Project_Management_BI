@@ -1,0 +1,49 @@
+version: "3.8"
+
+# ============================================================
+# PLANKA — Kanban Board (open-source Jira/Trello alternative)
+# Acesso: http://localhost:3333
+# Login: admin@portfolio.com / Admin@2026
+# ============================================================
+
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:latest
+    restart: on-failure
+    ports:
+      - "3333:1337"
+    volumes:
+      - planka-avatars:/app/public/user-avatars
+      - planka-backgrounds:/app/public/project-background-images
+      - planka-attachments:/app/private/attachments
+    environment:
+      - BASE_URL=http://localhost:3333
+      - DATABASE_URL=postgresql://postgres@planka-db/planka
+      - SECRET_KEY=linkedin-portfolio-secret-key-2026-secure
+      - DEFAULT_ADMIN_EMAIL=admin@portfolio.com
+      - DEFAULT_ADMIN_PASSWORD=Admin@2026
+      - DEFAULT_ADMIN_NAME=Portfolio Admin
+      - DEFAULT_ADMIN_USERNAME=admin
+    depends_on:
+      planka-db:
+        condition: service_healthy
+
+  planka-db:
+    image: postgres:14-alpine
+    restart: on-failure
+    volumes:
+      - planka-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=planka
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  planka-avatars:
+  planka-backgrounds:
+  planka-attachments:
+  planka-db-data:

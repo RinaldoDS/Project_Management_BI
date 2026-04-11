@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio BI — Gestão de Projetos</title>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d2e;
+  --surface2: #232740;
+  --border: #2e3250;
+  --text: #e2e8f0;
+  --text2: #8892b0;
+  --accent: #6366f1;
+  --green: #10b981;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --blue: #0ea5e9;
+  --pink: #ec4899;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px; min-height: 100vh; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+}
+.sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
+.sidebar-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sidebar-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.sidebar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.sidebar-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+.sidebar-section { padding: 16px 12px 8px; }
+.sidebar-section-label { font-size: 10px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; padding: 0 8px; margin-bottom: 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  border-radius: 8px; cursor: pointer; transition: all 0.15s;
+  font-size: 13px; color: var(--text2); margin-bottom: 2px;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(99,102,241,0.15); color: var(--accent); border-left: 3px solid var(--accent); }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.nav-status { font-size: 10px; margin-left: auto; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
+
+.sidebar-bottom { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+.planka-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: rgba(99,102,241,0.1); border-radius: 8px; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1px solid rgba(99,102,241,0.3); }
+.planka-link:hover { background: rgba(99,102,241,0.2); }
+
+/* MAIN */
+.main { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50;
+}
+.topbar-breadcrumb { font-size: 13px; color: var(--text2); }
+.topbar-breadcrumb span { color: var(--text); font-weight: 600; }
+.topbar-stats { display: flex; gap: 20px; }
+.topbar-stat { text-align: center; }
+.topbar-stat-val { font-size: 18px; font-weight: 700; color: var(--accent); }
+.topbar-stat-label { font-size: 10px; color: var(--text2); }
+
+/* TAB NAV */
+.tab-nav { display: flex; gap: 4px; padding: 16px 28px 0; border-bottom: 1px solid var(--border); background: var(--surface); }
+.tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; border-radius: 6px 6px 0 0; background: none; border-left: none; border-right: none; border-top: none; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* CONTENT */
+.content { padding: 24px 28px; flex: 1; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* CARDS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.card-sm { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.card-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.card-value { font-size: 28px; font-weight: 800; color: var(--text); }
+.card-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* PROJECT HERO */
+.project-hero { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 20px; }
+.project-color-bar { width: 6px; border-radius: 3px; align-self: stretch; flex-shrink: 0; }
+.project-info { flex: 1; }
+.project-name { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.project-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.tag { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.project-progress-row { display: flex; align-items: center; gap: 12px; }
+.progress-bar-outer { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.progress-bar-inner { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.progress-pct { font-size: 14px; font-weight: 700; }
+.project-meta { display: flex; flex-direction: column; gap: 8px; min-width: 160px; }
+.meta-item { display: flex; justify-content: space-between; align-items: center; }
+.meta-label { font-size: 11px; color: var(--text2); }
+.meta-val { font-size: 12px; font-weight: 600; color: var(--text); }
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+
+/* WIP */
+.wip-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.wip-col { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; text-align: center; }
+.wip-col-label { font-size: 10px; color: var(--text2); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px; }
+.wip-col-val { font-size: 24px; font-weight: 800; }
+.wip-col-limit { font-size: 10px; color: var(--yellow); margin-top: 2px; }
+.wip-over { border-color: var(--red) !important; }
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.kpi-label { font-size: 11px; color: var(--text2); margin-bottom: 8px; font-weight: 600; }
+.kpi-val { font-size: 22px; font-weight: 800; }
+.kpi-unit { font-size: 12px; color: var(--text2); margin-left: 2px; }
+.kpi-bar { height: 4px; border-radius: 2px; margin-top: 8px; background: var(--surface2); }
+.kpi-bar-fill { height: 100%; border-radius: 2px; }
+
+/* OKR */
+.okr-objective { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; border-left: 4px solid var(--accent); }
+.okr-obj-label { font-size: 11px; color: var(--text2); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+.okr-obj-text { font-size: 16px; font-weight: 700; color: var(--text); }
+.kr-list { display: flex; flex-direction: column; gap: 10px; }
+.kr-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.kr-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.kr-text { font-size: 13px; color: var(--text); font-weight: 500; flex: 1; }
+.kr-status { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-left: 12px; white-space: nowrap; }
+.kr-progress-outer { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+.kr-progress-inner { height: 100%; border-radius: 4px; transition: width 0.6s; }
+.kr-numbers { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
+
+/* ROI */
+.roi-hero { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.1)); border: 1px solid rgba(99,102,241,0.3); border-radius: 12px; padding: 28px; text-align: center; margin-bottom: 16px; }
+.roi-number { font-size: 72px; font-weight: 900; background: linear-gradient(135deg, #6366f1, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+.roi-label { font-size: 14px; color: var(--text2); margin-top: 8px; }
+
+/* TRADEOFF */
+.tradeoff-decision { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; border-left: 4px solid var(--yellow); }
+.tradeoff-title { font-size: 14px; font-weight: 700; color: var(--yellow); margin-bottom: 8px; }
+.tradeoff-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* BURNDOWN */
+.previsao-stats { display: flex; gap: 12px; margin-bottom: 16px; }
+.previsao-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+.previsao-stat-val { font-size: 28px; font-weight: 800; }
+.previsao-stat-label { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* RISKS */
+.risk-table { width: 100%; border-collapse: collapse; }
+.risk-table th { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+.risk-table td { font-size: 13px; color: var(--text); padding: 12px 12px; border-bottom: 1px solid var(--border); }
+.risk-prob { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+/* OVERVIEW GERAL */
+.overview-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.proj-card-mini { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; border-top: 3px solid; }
+.proj-card-mini:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.proj-card-mini-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.proj-card-mini-cat { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
+.proj-card-mini-prog { height: 6px; background: var(--surface2); border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+.proj-card-mini-prog-fill { height: 100%; border-radius: 3px; }
+.proj-card-mini-pct { font-size: 18px; font-weight: 800; }
+.proj-card-mini-meta { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* DIVIDER */
+.section-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* CHART WRAPPER */
+.chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.chart-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.chart-sub { font-size: 11px; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📊</div>
+      <div>
+        <div class="sidebar-title">Portfolio BI</div>
+        <div class="sidebar-sub">Gestão de Projetos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Visão Geral</div>
+    <div class="nav-item active" onclick="selectView('overview', this)">
+      <span>🏠</span> Dashboard Geral
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Projetos</div>
+    <div id="project-nav"></div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <a href="http://localhost:3333" target="_blank" class="planka-link">
+      📋 Abrir Planka (Kanban)
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-breadcrumb">Portfolio BI / <span id="topbar-title">Dashboard Geral</span></div>
+    <div class="topbar-stats">
+      <div class="topbar-stat"><div class="topbar-stat-val">5</div><div class="topbar-stat-label">Projetos</div></div>
+      <div class="topbar-stat"><div class="topbar-stat-val">145</div><div class="topbar-stat-label">Tasks</div></div>
+      <div class="topbar-stat"><div class="topbar-stat-val" id="avg-roi">—</div><div class="topbar-stat-label">ROI Médio</div></div>
+      <div class="topbar-stat"><div class="topbar-stat-val" id="avg-prog">—</div><div class="topbar-stat-label">Progresso Médio</div></div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW GERAL -->
+  <div id="view-overview" class="content">
+    <div class="section-title">Portfólio de Projetos</div>
+    <div class="overview-grid" id="overview-cards"></div>
+
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="chart-wrap">
+        <div class="chart-header"><div class="chart-title">ROI por Projeto</div><div class="chart-sub">Retorno sobre investimento (%)</div></div>
+        <div id="chart-roi-overview"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-header"><div class="chart-title">Progresso Geral</div><div class="chart-sub">% de conclusão por projeto</div></div>
+        <div id="chart-progress-overview"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <div class="chart-header"><div class="chart-title">WIP — Work In Progress</div><div class="chart-sub">Distribuição atual de tarefas</div></div>
+        <div id="chart-wip-overview"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-header"><div class="chart-title">Satisfação dos Stakeholders</div><div class="chart-sub">Score médio por projeto (0-100)</div></div>
+        <div id="chart-sat-overview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT DETAIL VIEW -->
+  <div id="view-project" style="display:none; flex-direction:column; flex:1">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="selectTab('visao-geral', this)">Visão Geral</button>
+      <button class="tab-btn" onclick="selectTab('kpis', this)">KPIs</button>
+      <button class="tab-btn" onclick="selectTab('okrs', this)">OKRs</button>
+      <button class="tab-btn" onclick="selectTab('roi', this)">ROI</button>
+      <button class="tab-btn" onclick="selectTab('tradeoff', this)">Trade-off</button>
+      <button class="tab-btn" onclick="selectTab('burndown', this)">Previsibilidade</button>
+    </div>
+    <div class="content">
+
+      <!-- TAB: Visão Geral -->
+      <div class="tab-pane active" id="tab-visao-geral">
+        <div id="proj-hero"></div>
+        <div class="section-title">WIP — Work In Progress</div>
+        <div class="wip-row" id="wip-cols"></div>
+        <div class="grid-2">
+          <div class="chart-wrap">
+            <div class="chart-header"><div class="chart-title">Velocidade de Entrega</div><div class="chart-sub">Story points por sprint</div></div>
+            <div id="chart-velocity"></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-header"><div class="chart-title">Distribuição WIP</div><div class="chart-sub">Tasks por status</div></div>
+            <div id="chart-wip-donut"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: KPIs -->
+      <div class="tab-pane" id="tab-kpis">
+        <div class="section-title">Indicadores de Performance</div>
+        <div class="kpi-grid" id="kpi-cards"></div>
+        <div class="chart-wrap">
+          <div class="chart-header"><div class="chart-title">Comparativo de KPIs — Todos os Projetos</div><div class="chart-sub">Radar de performance</div></div>
+          <div id="chart-kpi-radar"></div>
+        </div>
+      </div>
+
+      <!-- TAB: OKRs -->
+      <div class="tab-pane" id="tab-okrs">
+        <div class="section-title">Objectives & Key Results</div>
+        <div id="okr-content"></div>
+      </div>
+
+      <!-- TAB: ROI -->
+      <div class="tab-pane" id="tab-roi">
+        <div class="section-title">Retorno sobre Investimento</div>
+        <div id="roi-content"></div>
+      </div>
+
+      <!-- TAB: Trade-off -->
+      <div class="tab-pane" id="tab-tradeoff">
+        <div class="section-title">Análise de Trade-off</div>
+        <div id="tradeoff-content"></div>
+      </div>
+
+      <!-- TAB: Burndown -->
+      <div class="tab-pane" id="tab-burndown">
+        <div class="section-title">Previsibilidade Operacional</div>
+        <div id="burndown-content"></div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+// ============================================================
+// DADOS DOS PROJETOS
+// ============================================================
+const DATA = {"portfolio":{"nome":"Portfólio de Projetos — Analista de TI","responsavel":"Analista de TI | QA | DevOps","periodo":"2024–2026","total_projetos":5},"projetos":[{"id":"PRJ-001","nome":"Projeto Saindo do Zero","descricao":"Automação de testes E2E com Playwright + Cypress, pipeline CI/CD (Jenkins/Azure), cobertura de qualidade de aplicação web.","status":"Em Andamento","categoria":"QA & Automação","cor":"#6366f1","inicio":"2024-01-15","fim_previsto":"2026-06-30","progresso":72,"time":3,"tecnologias":["Playwright","Cypress","Jenkins","Azure DevOps","Node.js","SQLite"],"wip":{"backlog":8,"todo":5,"in_progress":4,"review":2,"done":47,"limite_wip":5},"sprints":[{"numero":1,"planejado":10,"entregue":9,"velocidade":9},{"numero":2,"planejado":12,"entregue":11,"velocidade":11},{"numero":3,"planejado":11,"entregue":10,"velocidade":10},{"numero":4,"planejado":13,"entregue":12,"velocidade":12},{"numero":5,"planejado":12,"entregue":14,"velocidade":14},{"numero":6,"planejado":14,"entregue":11,"velocidade":11}],"kpis":{"cobertura_testes":87,"taxa_defeitos":3.2,"lead_time_dias":4.5,"cycle_time_dias":2.1,"throughput_semana":6,"deploy_freq_semana":3,"mttr_horas":1.8,"satisfacao_stakeholder":92},"okrs":{"objetivo":"Garantir qualidade total do pipeline de entrega de software","key_results":[{"kr":"Cobertura de testes automatizados ≥ 85%","meta":85,"atual":87,"status":"atingido"},{"kr":"Reduzir tempo de build CI/CD para < 8 min","meta":8,"atual":6.2,"status":"atingido"},{"kr":"Zero bugs críticos em produção no trimestre","meta":0,"atual":1,"status":"em_risco"},{"kr":"100% dos testes de regressão automatizados","meta":100,"atual":72,"status":"em_andamento"}]},"roi":{"investimento_horas":523,"custo_hora":82,"custo_total":42886,"valor_gerado_estimado":119224,"roi_percentual":178,"bugs_evitados":43,"custo_bug_medio":1640,"economia_retrabalho":70520},"tradeoff":{"principal":"Qualidade vs. Velocidade","decisao":"Priorizou cobertura de testes em detrimento do prazo, garantindo estabilidade a longo prazo.","custo":65,"prazo":55,"escopo":85,"qualidade":92},"previsibilidade":{"percentual_prazo_cumprido":83,"desvio_medio_dias":3,"burndown":[66,58,49,40,32,22,14,8,3,0],"burndown_ideal":[66,59,53,46,40,33,26,20,13,0],"riscos":[{"risco":"Complexidade de integração legado","probabilidade":"Alta","impacto":"Médio","mitigacao":"Testes de contrato implementados"},{"risco":"Rotatividade da equipe","probabilidade":"Baixa","impacto":"Alto","mitigacao":"Documentação completa e pair programming"}]}},{"id":"PRJ-002","nome":"Artemis II","descricao":"Plataforma de monitoramento e análise de dados aeronáuticos com dashboards interativos, scraping automatizado e alertas em tempo real.","status":"Em Andamento","categoria":"Data & Analytics","cor":"#0ea5e9","inicio":"2024-06-01","fim_previsto":"2026-09-30","progresso":54,"time":4,"tecnologias":["Python","SQLite","JavaScript","HTML/CSS","Playwright","REST API"],"wip":{"backlog":15,"todo":7,"in_progress":3,"review":2,"done":31,"limite_wip":4},"sprints":[{"numero":1,"planejado":8,"entregue":7,"velocidade":7},{"numero":2,"planejado":9,"entregue":9,"velocidade":9},{"numero":3,"planejado":10,"entregue":8,"velocidade":8},{"numero":4,"planejado":9,"entregue":10,"velocidade":10},{"numero":5,"planejado":11,"entregue":9,"velocidade":9}],"kpis":{"cobertura_testes":61,"taxa_defeitos":5.1,"lead_time_dias":6.8,"cycle_time_dias":3.4,"throughput_semana":4,"deploy_freq_semana":2,"mttr_horas":3.2,"satisfacao_stakeholder":88},"okrs":{"objetivo":"Entregar plataforma de analytics aeronáutico com dados em tempo real","key_results":[{"kr":"Dashboard com 100% das rotas ANAC mapeadas","meta":100,"atual":74,"status":"em_andamento"},{"kr":"Latência de atualização de dados < 5 min","meta":5,"atual":4.2,"status":"atingido"},{"kr":"Precisão dos alertas automáticos > 95%","meta":95,"atual":91,"status":"em_risco"},{"kr":"Uptime da plataforma ≥ 99.5%","meta":99.5,"atual":98.7,"status":"em_risco"}]},"roi":{"investimento_horas":687,"custo_hora":78,"custo_total":53586,"valor_gerado_estimado":74820,"roi_percentual":40,"horas_manuais_economizadas":97,"custo_hora_manual":55,"economia_processos":5335},"tradeoff":{"principal":"Escopo vs. Prazo","decisao":"Expandiu escopo para incluir análise histórica de 5 anos, impactando prazo original em +2 meses.","custo":70,"prazo":45,"escopo":78,"qualidade":80},"previsibilidade":{"percentual_prazo_cumprido":68,"desvio_medio_dias":8,"burndown":[85,76,69,61,55,48,41],"burndown_ideal":[85,75,65,55,45,35,25],"riscos":[{"risco":"API externa ANAC instável","probabilidade":"Média","impacto":"Alto","mitigacao":"Cache local e retry automático"},{"risco":"Volume de dados maior que esperado","probabilidade":"Alta","impacto":"Médio","mitigacao":"Paginação e indexação implementadas"}]}},{"id":"PRJ-003","nome":"Portal RH Digital","descricao":"Migração de sistema legado de RH para plataforma web moderna, com integração de folha de pagamento, ponto eletrônico e gestão de benefícios.","status":"Concluído","categoria":"Migração de Sistema","cor":"#10b981","inicio":"2023-03-01","fim_previsto":"2024-02-28","progresso":100,"time":5,"tecnologias":["React","Node.js","PostgreSQL","Docker","REST API","JWT"],"wip":{"backlog":0,"todo":0,"in_progress":0,"review":0,"done":94,"limite_wip":6},"sprints":[{"numero":1,"planejado":10,"entregue":10,"velocidade":10},{"numero":2,"planejado":12,"entregue":13,"velocidade":13},{"numero":3,"planejado":11,"entregue":10,"velocidade":10},{"numero":4,"planejado":13,"entregue":12,"velocidade":12},{"numero":5,"planejado":14,"entregue":15,"velocidade":15},{"numero":6,"planejado":12,"entregue":13,"velocidade":13},{"numero":7,"planejado":11,"entregue":11,"velocidade":11}],"kpis":{"cobertura_testes":91,"taxa_defeitos":1.8,"lead_time_dias":3.2,"cycle_time_dias":1.5,"throughput_semana":8,"deploy_freq_semana":5,"mttr_horas":0.9,"satisfacao_stakeholder":96},"okrs":{"objetivo":"Modernizar gestão de RH eliminando processos manuais","key_results":[{"kr":"100% dos processos manuais automatizados","meta":100,"atual":100,"status":"atingido"},{"kr":"Reduzir tempo de fechamento de folha de 3 dias para 4h","meta":4,"atual":3.5,"status":"atingido"},{"kr":"Satisfação dos usuários RH > 90%","meta":90,"atual":96,"status":"atingido"},{"kr":"Zero incidentes de segurança de dados pessoais","meta":0,"atual":0,"status":"atingido"}]},"roi":{"investimento_horas":876,"custo_hora":91,"custo_total":79716,"valor_gerado_estimado":261480,"roi_percentual":228,"funcionarios_impactados":447,"horas_economizadas_mes":163,"economia_anual":98340},"tradeoff":{"principal":"Custo vs. Qualidade","decisao":"Investiu em testes e segurança mesmo ultrapassando budget em 12%, evitando incidentes de LGPD.","custo":80,"prazo":90,"escopo":100,"qualidade":96},"previsibilidade":{"percentual_prazo_cumprido":94,"desvio_medio_dias":2,"burndown":[94,84,71,59,47,35,22,11,3,0],"burndown_ideal":[94,84,74,64,54,44,34,24,14,0],"riscos":[{"risco":"Resistência à mudança dos usuários","probabilidade":"Alta","impacto":"Médio","mitigacao":"Treinamento e change management"},{"risco":"Conformidade LGPD","probabilidade":"Média","impacto":"Crítico","mitigacao":"DPO consultado, auditoria externa"}]}},{"id":"PRJ-004","nome":"DataLake Corporativo","descricao":"Implementação de pipeline de dados centralizado, ingestão de múltiplas fontes, transformação ETL e disponibilização para times de analytics.","status":"Em Andamento","categoria":"Data Engineering","cor":"#f59e0b","inicio":"2025-01-10","fim_previsto":"2026-12-31","progresso":38,"time":3,"tecnologias":["Python","Apache Airflow","PostgreSQL","Docker","dbt","Pandas"],"wip":{"backlog":22,"todo":9,"in_progress":3,"review":1,"done":21,"limite_wip":4},"sprints":[{"numero":1,"planejado":7,"entregue":6,"velocidade":6},{"numero":2,"planejado":8,"entregue":8,"velocidade":8},{"numero":3,"planejado":8,"entregue":7,"velocidade":7},{"numero":4,"planejado":9,"entregue":8,"velocidade":8}],"kpis":{"cobertura_testes":55,"taxa_defeitos":7.4,"lead_time_dias":9.2,"cycle_time_dias":4.8,"throughput_semana":3,"deploy_freq_semana":1,"mttr_horas":5.1,"satisfacao_stakeholder":79},"okrs":{"objetivo":"Centralizar fontes de dados para tomada de decisão orientada a dados","key_results":[{"kr":"Ingerir 15 fontes de dados distintas","meta":15,"atual":7,"status":"em_andamento"},{"kr":"Latência máxima de pipeline ETL de 2h","meta":2,"atual":3.1,"status":"em_risco"},{"kr":"Data quality score > 95% nas tabelas gold","meta":95,"atual":87,"status":"em_andamento"},{"kr":"Reduzir relatórios manuais em 80%","meta":80,"atual":35,"status":"em_andamento"}]},"roi":{"investimento_horas":412,"custo_hora":77,"custo_total":31724,"valor_gerado_estimado":83418,"roi_percentual":163,"relatorios_automatizados":11,"horas_analista_economizadas":43,"projecao_roi_12_meses":287},"tradeoff":{"principal":"Velocidade vs. Governança","decisao":"Adotou controles de qualidade de dados rigorosos, desacelerando ingestão para garantir confiabilidade.","custo":55,"prazo":40,"escopo":55,"qualidade":87},"previsibilidade":{"percentual_prazo_cumprido":72,"desvio_medio_dias":11,"burndown":[56,50,43,36,29],"burndown_ideal":[56,50,44,38,32],"riscos":[{"risco":"Schema drift nas fontes legadas","probabilidade":"Alta","impacto":"Alto","mitigacao":"Schema registry e testes de contrato"},{"risco":"Capacidade do servidor insuficiente","probabilidade":"Média","impacto":"Alto","mitigacao":"Auto-scaling configurado em Docker"}]}},{"id":"PRJ-005","nome":"App Mobile Vendas","descricao":"CRM mobile para equipe de vendas externas: gestão de leads, pipeline de oportunidades, geolocalização de clientes e relatórios de performance.","status":"Planejamento","categoria":"Mobile & CRM","cor":"#ec4899","inicio":"2026-02-01","fim_previsto":"2026-11-30","progresso":15,"time":4,"tecnologias":["React Native","Node.js","MongoDB","Firebase","REST API","GPS API"],"wip":{"backlog":35,"todo":12,"in_progress":2,"review":0,"done":8,"limite_wip":5},"sprints":[{"numero":1,"planejado":6,"entregue":5,"velocidade":5},{"numero":2,"planejado":7,"entregue":8,"velocidade":8}],"kpis":{"cobertura_testes":32,"taxa_defeitos":11.2,"lead_time_dias":14.5,"cycle_time_dias":7.2,"throughput_semana":2,"deploy_freq_semana":1,"mttr_horas":8.4,"satisfacao_stakeholder":74},"okrs":{"objetivo":"Aumentar produtividade da força de vendas em 30%","key_results":[{"kr":"App disponível em iOS e Android","meta":100,"atual":20,"status":"em_andamento"},{"kr":"Integrar 100% dos leads do Salesforce","meta":100,"atual":0,"status":"em_andamento"},{"kr":"Tempo de registro de visita < 2 min","meta":2,"atual":null,"status":"nao_iniciado"},{"kr":"Adoção de 90% da força de vendas no mês 1","meta":90,"atual":null,"status":"nao_iniciado"}]},"roi":{"investimento_horas":197,"custo_hora":74,"custo_total":14578,"valor_gerado_estimado":41820,"roi_percentual":187,"vendedores_impactados":118,"aumento_conversao_estimado":12,"projecao_receita_adicional":623400},"tradeoff":{"principal":"Prazo vs. Features","decisao":"MVP focado nas 3 features core (leads, pipeline, geo), integrações avançadas ficaram para v2.","custo":45,"prazo":70,"escopo":40,"qualidade":65},"previsibilidade":{"percentual_prazo_cumprido":78,"desvio_medio_dias":5,"burndown":[57,52,44],"burndown_ideal":[57,51,45],"riscos":[{"risco":"Aprovação nas lojas Apple/Google","probabilidade":"Média","impacto":"Alto","mitigacao":"Guidelines verificados desde o início"},{"risco":"Conectividade offline dos vendedores","probabilidade":"Alta","impacto":"Crítico","mitigacao":"Modo offline-first no backlog sprint 3"}]}}]};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentProject = null;
+let charts = {};
+
+const STATUS_COLORS = { 'Em Andamento': '#6366f1', 'Concluído': '#10b981', 'Planejamento': '#f59e0b' };
+const STATUS_BG = { 'Em Andamento': 'rgba(99,102,241,0.15)', 'Concluído': 'rgba(16,185,129,0.15)', 'Planejamento': 'rgba(245,158,11,0.15)' };
+const KR_STATUS = { 'atingido': ['#10b981','rgba(16,185,129,0.15)','✅ Atingido'], 'em_andamento': ['#6366f1','rgba(99,102,241,0.15)','🔄 Em andamento'], 'em_risco': ['#ef4444','rgba(239,68,68,0.15)','⚠️ Em risco'], 'nao_iniciado': ['#8892b0','rgba(136,146,176,0.1)','⏸ Não iniciado'] };
+const PROB_COLORS = { 'Alta': '#ef4444', 'Média': '#f59e0b', 'Baixa': '#10b981' };
+
+function fmtMoeda(v) { return 'R$ ' + v.toLocaleString('pt-BR'); }
+function fmtPct(v) { return v + '%'; }
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  buildSidebarNav();
+  buildOverviewCards();
+  buildOverviewCharts();
+  const avgRoi = Math.round(DATA.projetos.reduce((s,p) => s + p.roi.roi_percentual, 0) / DATA.projetos.length);
+  const avgProg = Math.round(DATA.projetos.reduce((s,p) => s + p.progresso, 0) / DATA.projetos.length);
+  document.getElementById('avg-roi').textContent = avgRoi + '%';
+  document.getElementById('avg-prog').textContent = avgProg + '%';
+}
+
+// ============================================================
+// SIDEBAR NAV
+// ============================================================
+function buildSidebarNav() {
+  const nav = document.getElementById('project-nav');
+  nav.innerHTML = DATA.projetos.map((p, i) => `
+    <div class="nav-item" onclick="selectProject(${i}, this)">
+      <span class="nav-dot" style="background:${p.cor}"></span>
+      <span style="flex:1;font-size:12px">${p.nome}</span>
+      <span class="nav-status" style="color:${STATUS_COLORS[p.status]};background:${STATUS_BG[p.status]}">${p.progresso}%</span>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// OVERVIEW GERAL
+// ============================================================
+function buildOverviewCards() {
+  document.getElementById('overview-cards').innerHTML = DATA.projetos.map((p, i) => `
+    <div class="proj-card-mini" style="border-top-color:${p.cor}" onclick="selectProject(${i}, null)">
+      <div class="proj-card-mini-name">${p.nome}</div>
+      <div class="proj-card-mini-cat">${p.categoria}</div>
+      <div class="proj-card-mini-prog"><div class="proj-card-mini-prog-fill" style="width:${p.progresso}%;background:${p.cor}"></div></div>
+      <div class="proj-card-mini-pct" style="color:${p.cor}">${p.progresso}%</div>
+      <div class="proj-card-mini-meta">${p.status} · ${p.time} devs</div>
+    </div>
+  `).join('');
+}
+
+function buildOverviewCharts() {
+  const nomes = DATA.projetos.map(p => p.nome.split(' ').slice(0,2).join(' '));
+  const cores = DATA.projetos.map(p => p.cor);
+
+  destroyChart('chart-roi-overview');
+  charts['roi-overview'] = new ApexCharts(document.getElementById('chart-roi-overview'), {
+    chart: { type: 'bar', height: 220, background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    series: [{ name: 'ROI %', data: DATA.projetos.map(p => p.roi.roi_percentual) }],
+    xaxis: { categories: nomes, labels: { style: { colors: '#8892b0', fontSize: '11px' } } },
+    yaxis: { labels: { formatter: v => v + '%', style: { colors: '#8892b0' } } },
+    colors: cores,
+    plotOptions: { bar: { distributed: true, borderRadius: 6, columnWidth: '55%' } },
+    legend: { show: false },
+    dataLabels: { enabled: true, formatter: v => v + '%', style: { fontSize: '12px', fontWeight: 700 } },
+    grid: { borderColor: '#2e3250' }
+  });
+  charts['roi-overview'].render();
+
+  destroyChart('chart-progress-overview');
+  charts['progress-overview'] = new ApexCharts(document.getElementById('chart-progress-overview'), {
+    chart: { type: 'radialBar', height: 220, background: 'transparent' },
+    theme: { mode: 'dark' },
+    series: DATA.projetos.map(p => p.progresso),
+    labels: nomes,
+    colors: cores,
+    plotOptions: { radialBar: { dataLabels: { name: { fontSize: '10px' }, value: { fontSize: '12px', fontWeight: 700, formatter: v => v + '%' } }, hollow: { size: '20%' } } },
+    legend: { show: false }
+  });
+  charts['progress-overview'].render();
+
+  destroyChart('chart-wip-overview');
+  charts['wip-overview'] = new ApexCharts(document.getElementById('chart-wip-overview'), {
+    chart: { type: 'bar', height: 220, stacked: true, background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    series: [
+      { name: 'Backlog', data: DATA.projetos.map(p => p.wip.backlog) },
+      { name: 'Em Dev', data: DATA.projetos.map(p => p.wip.in_progress) },
+      { name: 'Review', data: DATA.projetos.map(p => p.wip.review) },
+      { name: 'Concluído', data: DATA.projetos.map(p => p.wip.done) }
+    ],
+    colors: ['#8892b0', '#6366f1', '#f59e0b', '#10b981'],
+    xaxis: { categories: nomes, labels: { style: { colors: '#8892b0', fontSize: '11px' } } },
+    yaxis: { labels: { style: { colors: '#8892b0' } } },
+    legend: { labels: { colors: '#8892b0' } },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '55%' } },
+    grid: { borderColor: '#2e3250' },
+    dataLabels: { enabled: false }
+  });
+  charts['wip-overview'].render();
+
+  destroyChart('chart-sat-overview');
+  charts['sat-overview'] = new ApexCharts(document.getElementById('chart-sat-overview'), {
+    chart: { type: 'bar', height: 220, background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    series: [{ name: 'Satisfação', data: DATA.projetos.map(p => p.kpis.satisfacao_stakeholder) }],
+    xaxis: { categories: nomes, labels: { style: { colors: '#8892b0', fontSize: '11px' } } },
+    yaxis: { min: 0, max: 100, labels: { formatter: v => v + '%', style: { colors: '#8892b0' } } },
+    colors: cores,
+    plotOptions: { bar: { distributed: true, borderRadius: 6, columnWidth: '55%' } },
+    legend: { show: false },
+    dataLabels: { enabled: true, formatter: v => v + '%', style: { fontSize: '12px', fontWeight: 700 } },
+    grid: { borderColor: '#2e3250' },
+    annotations: { yaxis: [{ y: 85, borderColor: '#10b981', label: { text: 'Meta 85%', style: { color: '#10b981', background: 'transparent' } } }] }
+  });
+  charts['sat-overview'].render();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function selectView(view, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
+  document.getElementById('view-project').style.display = view === 'project' ? 'flex' : 'none';
+  document.getElementById('topbar-title').textContent = 'Dashboard Geral';
+}
+
+function selectProject(idx, el) {
+  currentProject = DATA.projetos[idx];
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(el) { el.classList.add('active'); }
+  else {
+    const navItems = document.querySelectorAll('#project-nav .nav-item');
+    if(navItems[idx]) navItems[idx].classList.add('active');
+  }
+  document.getElementById('view-overview').style.display = 'none';
+  document.getElementById('view-project').style.display = 'flex';
+  document.getElementById('topbar-title').textContent = currentProject.nome;
+  selectTab('visao-geral', document.querySelector('.tab-btn'));
+  buildProjectView();
+}
+
+function selectTab(tab, el) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if(el) el.classList.add('active');
+  if(tab === 'visao-geral') buildVisaoGeral();
+  if(tab === 'kpis') buildKPIs();
+  if(tab === 'okrs') buildOKRs();
+  if(tab === 'roi') buildROI();
+  if(tab === 'tradeoff') buildTradeoff();
+  if(tab === 'burndown') buildBurndown();
+}
+
+function destroyChart(id) {
+  if(charts[id]) { try { charts[id].destroy(); } catch(e) {} delete charts[id]; }
+}
+
+// ============================================================
+// PROJECT VIEW BUILDER
+// ============================================================
+function buildProjectView() { buildVisaoGeral(); }
+
+function buildVisaoGeral() {
+  const p = currentProject;
+  const statusColor = STATUS_COLORS[p.status];
+  const statusBg = STATUS_BG[p.status];
+
+  document.getElementById('proj-hero').innerHTML = `
+    <div class="project-hero">
+      <div class="project-color-bar" style="background:${p.cor}"></div>
+      <div class="project-info">
+        <div class="project-name">${p.id} — ${p.nome}</div>
+        <div class="project-desc">${p.descricao}</div>
+        <div class="project-tags">
+          ${p.tecnologias.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+        <div class="project-progress-row">
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" style="width:${p.progresso}%;background:${p.cor}"></div>
+          </div>
+          <span class="progress-pct" style="color:${p.cor}">${p.progresso}%</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        <div class="meta-item"><span class="meta-label">Status</span><span class="status-badge" style="color:${statusColor};background:${statusBg}">${p.status}</span></div>
+        <div class="meta-item"><span class="meta-label">Categoria</span><span class="meta-val">${p.categoria}</span></div>
+        <div class="meta-item"><span class="meta-label">Time</span><span class="meta-val">${p.time} pessoas</span></div>
+        <div class="meta-item"><span class="meta-label">Início</span><span class="meta-val">${p.inicio}</span></div>
+        <div class="meta-item"><span class="meta-label">Previsão</span><span class="meta-val">${p.fim_previsto}</span></div>
+        <div class="meta-item"><span class="meta-label">ROI</span><span class="meta-val" style="color:#10b981;font-size:16px;font-weight:800">+${p.roi.roi_percentual}%</span></div>
+      </div>
+    </div>
+  `;
+
+  const wip = p.wip;
+  const wipOver = wip.in_progress > wip.limite_wip;
+  document.getElementById('wip-cols').innerHTML = `
+    <div class="wip-col"><div class="wip-col-label">Backlog</div><div class="wip-col-val" style="color:#8892b0">${wip.backlog}</div></div>
+    <div class="wip-col"><div class="wip-col-label">A Fazer</div><div class="wip-col-val" style="color:#6366f1">${wip.todo || 0}</div></div>
+    <div class="wip-col ${wipOver ? 'wip-over' : ''}">
+      <div class="wip-col-label">Em Progresso</div>
+      <div class="wip-col-val" style="color:${wipOver ? '#ef4444' : '#f59e0b'}">${wip.in_progress}</div>
+      <div class="wip-col-limit">Limite WIP: ${wip.limite_wip}${wipOver ? ' ⚠️' : ''}</div>
+    </div>
+    <div class="wip-col"><div class="wip-col-label">Em Revisão</div><div class="wip-col-val" style="color:#0ea5e9">${wip.review}</div></div>
+    <div class="wip-col"><div class="wip-col-label">Concluído</div><div class="wip-col-val" style="color:#10b981">${wip.done}</div></div>
+  `;
+
+  destroyChart('chart-velocity');
+  charts['velocity'] = new ApexCharts(document.getElementById('chart-velocity'), {
+    chart: { type: 'bar', height: 220, background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    series: [
+      { name: 'Planejado', data: p.sprints.map(s => s.planejado) },
+      { name: 'Entregue', data: p.sprints.map(s => s.entregue) }
+    ],
+    xaxis: { categories: p.sprints.map(s => 'Sprint ' + s.numero), labels: { style: { colors: '#8892b0' } } },
+    yaxis: { labels: { style: { colors: '#8892b0' } } },
+    colors: ['#2e3250', p.cor],
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '65%', grouped: true } },
+    legend: { labels: { colors: '#8892b0' } },
+    grid: { borderColor: '#2e3250' },
+    dataLabels: { enabled: false }
+  });
+  charts['velocity'].render();
+
+  destroyChart('chart-wip-donut');
+  charts['wip-donut'] = new ApexCharts(document.getElementById('chart-wip-donut'), {
+    chart: { type: 'donut', height: 220, background: 'transparent' },
+    theme: { mode: 'dark' },
+    series: [wip.backlog, wip.todo || 0, wip.in_progress, wip.review, wip.done],
+    labels: ['Backlog', 'A Fazer', 'Em Progresso', 'Review', 'Concluído'],
+    colors: ['#8892b0', '#6366f1', '#f59e0b', '#0ea5e9', '#10b981'],
+    legend: { position: 'right', labels: { colors: '#8892b0' } },
+    plotOptions: { pie: { donut: { size: '60%', labels: { show: true, total: { show: true, label: 'Total', color: '#8892b0', formatter: () => wip.backlog + (wip.todo||0) + wip.in_progress + wip.review + wip.done } } } } },
+    dataLabels: { enabled: false }
+  });
+  charts['wip-donut'].render();
+}
+
+function buildKPIs() {
+  const p = currentProject;
+  const k = p.kpis;
+  const kpiDefs = [
+    { label: 'Cobertura de Testes', val: k.cobertura_testes, unit: '%', color: k.cobertura_testes >= 80 ? '#10b981' : k.cobertura_testes >= 60 ? '#f59e0b' : '#ef4444', pct: k.cobertura_testes, max: 100 },
+    { label: 'Taxa de Defeitos', val: k.taxa_defeitos, unit: '%', color: k.taxa_defeitos <= 3 ? '#10b981' : k.taxa_defeitos <= 7 ? '#f59e0b' : '#ef4444', pct: 100 - Math.min(k.taxa_defeitos * 10, 100), max: 100 },
+    { label: 'Lead Time', val: k.lead_time_dias, unit: 'dias', color: k.lead_time_dias <= 4 ? '#10b981' : k.lead_time_dias <= 8 ? '#f59e0b' : '#ef4444', pct: Math.max(0, 100 - k.lead_time_dias * 6), max: 100 },
+    { label: 'Cycle Time', val: k.cycle_time_dias, unit: 'dias', color: k.cycle_time_dias <= 2 ? '#10b981' : k.cycle_time_dias <= 5 ? '#f59e0b' : '#ef4444', pct: Math.max(0, 100 - k.cycle_time_dias * 10), max: 100 },
+    { label: 'Throughput', val: k.throughput_semana, unit: '/sem', color: k.throughput_semana >= 6 ? '#10b981' : k.throughput_semana >= 3 ? '#f59e0b' : '#ef4444', pct: Math.min(k.throughput_semana * 12, 100), max: 100 },
+    { label: 'Deploy Frequency', val: k.deploy_freq_semana, unit: 'x/sem', color: k.deploy_freq_semana >= 4 ? '#10b981' : k.deploy_freq_semana >= 2 ? '#f59e0b' : '#ef4444', pct: Math.min(k.deploy_freq_semana * 20, 100), max: 100 },
+    { label: 'MTTR (Recuperação)', val: k.mttr_horas, unit: 'h', color: k.mttr_horas <= 1 ? '#10b981' : k.mttr_horas <= 4 ? '#f59e0b' : '#ef4444', pct: Math.max(0, 100 - k.mttr_horas * 10), max: 100 },
+    { label: 'Satisfação Stakeholders', val: k.satisfacao_stakeholder, unit: '/100', color: k.satisfacao_stakeholder >= 90 ? '#10b981' : k.satisfacao_stakeholder >= 75 ? '#f59e0b' : '#ef4444', pct: k.satisfacao_stakeholder, max: 100 },
+  ];
+
+  document.getElementById('kpi-cards').innerHTML = kpiDefs.map(k => `
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-val" style="color:${k.color}">${k.val}<span class="kpi-unit">${k.unit}</span></div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${k.pct}%;background:${k.color}"></div></div>
+    </div>
+  `).join('');
+
+  destroyChart('chart-kpi-radar');
+  charts['kpi-radar'] = new ApexCharts(document.getElementById('chart-kpi-radar'), {
+    chart: { type: 'radar', height: 320, background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    series: DATA.projetos.map(pp => ({
+      name: pp.nome.split(' ').slice(0,2).join(' '),
+      data: [
+        pp.kpis.cobertura_testes,
+        100 - Math.min(pp.kpis.taxa_defeitos * 10, 100),
+        Math.max(0, 100 - pp.kpis.lead_time_dias * 6),
+        Math.min(pp.kpis.throughput_semana * 12, 100),
+        Math.min(pp.kpis.deploy_freq_semana * 20, 100),
+        pp.kpis.satisfacao_stakeholder
+      ]
+    })),
+    xaxis: { categories: ['Cobertura Testes', 'Qualidade (inv. defeitos)', 'Velocidade (inv. lead time)', 'Throughput', 'Deploy Freq.', 'Satisfação'] },
+    colors: DATA.projetos.map(pp => pp.cor),
+    yaxis: { show: false },
+    legend: { labels: { colors: '#8892b0' } },
+    stroke: { width: 2 },
+    fill: { opacity: 0.1 },
+    markers: { size: 4 },
+    grid: { show: false }
+  });
+  charts['kpi-radar'].render();
+}
+
+function buildOKRs() {
+  const p = currentProject;
+  const o = p.okrs;
+  document.getElementById('okr-content').innerHTML = `
+    <div class="okr-objective">
+      <div class="okr-obj-label">🎯 Objetivo</div>
+      <div class="okr-obj-text">${o.objetivo}</div>
+    </div>
+    <div class="kr-list">
+      ${o.key_results.map((kr, i) => {
+        const [color, bg, label] = KR_STATUS[kr.status] || KR_STATUS['em_andamento'];
+        const atual = kr.atual ?? 0;
+        const pct = kr.meta === 0 ? (atual === 0 ? 100 : 0) : Math.min(Math.round((atual / kr.meta) * 100), 100);
+        const pctDisplay = kr.status === 'nao_iniciado' ? 0 : pct;
+        return `
+          <div class="kr-item">
+            <div class="kr-header">
+              <div class="kr-text"><strong>KR${i+1}:</strong> ${kr.kr}</div>
+              <div class="kr-status" style="color:${color};background:${bg}">${label}</div>
+            </div>
+            <div class="kr-progress-outer">
+              <div class="kr-progress-inner" style="width:${pctDisplay}%;background:${color}"></div>
+            </div>
+            <div class="kr-numbers">
+              <span>Atual: <strong style="color:${color}">${kr.atual ?? '—'}</strong></span>
+              <span>${pctDisplay}% da meta</span>
+              <span>Meta: <strong>${kr.meta}</strong></span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function buildROI() {
+  const p = currentProject;
+  const r = p.roi;
+  const extraKeys = Object.entries(r).filter(([k]) => !['investimento_horas','custo_hora','custo_total','valor_gerado_estimado','roi_percentual'].includes(k));
+  document.getElementById('roi-content').innerHTML = `
+    <div class="roi-hero">
+      <div class="roi-number">+${r.roi_percentual}%</div>
+      <div class="roi-label">Retorno sobre Investimento</div>
+    </div>
+    <div class="grid-3">
+      <div class="card-sm">
+        <div class="card-title">Investimento Total</div>
+        <div class="card-value" style="font-size:22px;color:#ef4444">${fmtMoeda(r.custo_total)}</div>
+        <div class="card-sub">${r.investimento_horas}h × ${fmtMoeda(r.custo_hora)}/h</div>
+      </div>
+      <div class="card-sm">
+        <div class="card-title">Valor Gerado</div>
+        <div class="card-value" style="font-size:22px;color:#10b981">${fmtMoeda(r.valor_gerado_estimado)}</div>
+        <div class="card-sub">Estimativa de retorno financeiro</div>
+      </div>
+      <div class="card-sm">
+        <div class="card-title">Lucro Líquido</div>
+        <div class="card-value" style="font-size:22px;color:#6366f1">${fmtMoeda(r.valor_gerado_estimado - r.custo_total)}</div>
+        <div class="card-sub">Valor gerado − investimento</div>
+      </div>
+    </div>
+    ${extraKeys.length > 0 ? `
+    <div class="section-title">Detalhamento</div>
+    <div class="grid-3">
+      ${extraKeys.map(([k, v]) => `
+        <div class="card-sm">
+          <div class="card-title">${k.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</div>
+          <div class="card-value" style="font-size:20px;color:#0ea5e9">${typeof v === 'number' && v > 1000 ? fmtMoeda(v) : v}</div>
+        </div>
+      `).join('')}
+    </div>` : ''}
+    <div class="chart-wrap" style="margin-top:16px">
+      <div class="chart-header"><div class="chart-title">ROI Comparativo — Todos os Projetos</div></div>
+      <div id="chart-roi-detail"></div>
+    </div>
+  `;
+  setTimeout(() => {
+    destroyChart('chart-roi-detail');
+    charts['roi-detail'] = new ApexCharts(document.getElementById('chart-roi-detail'), {
+      chart: { type: 'bar', height: 200, background: 'transparent', toolbar: { show: false } },
+      theme: { mode: 'dark' },
+      series: [
+        { name: 'Investimento (R$)', data: DATA.projetos.map(pp => pp.roi.custo_total) },
+        { name: 'Valor Gerado (R$)', data: DATA.projetos.map(pp => pp.roi.valor_gerado_estimado) }
+      ],
+      xaxis: { categories: DATA.projetos.map(pp => pp.nome.split(' ').slice(0,2).join(' ')), labels: { style: { colors: '#8892b0' } } },
+      yaxis: { labels: { formatter: v => 'R$' + (v/1000).toFixed(0) + 'k', style: { colors: '#8892b0' } } },
+      colors: ['#ef4444', '#10b981'],
+      plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+      legend: { labels: { colors: '#8892b0' } },
+      grid: { borderColor: '#2e3250' },
+      dataLabels: { enabled: false }
+    });
+    charts['roi-detail'].render();
+  }, 100);
+}
+
+function buildTradeoff() {
+  const p = currentProject;
+  const t = p.tradeoff;
+  document.getElementById('tradeoff-content').innerHTML = `
+    <div class="tradeoff-decision">
+      <div class="tradeoff-title">⚖️ Trade-off Principal: ${t.principal}</div>
+      <div class="tradeoff-text">${t.decisao}</div>
+    </div>
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <div class="chart-header"><div class="chart-title">Triângulo de Restrições</div><div class="chart-sub">Custo × Prazo × Escopo × Qualidade</div></div>
+        <div id="chart-tradeoff-radar"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Análise das Dimensões</div>
+        ${[['Custo', t.custo, '#ef4444'],['Prazo', t.prazo, '#f59e0b'],['Escopo', t.escopo, '#0ea5e9'],['Qualidade', t.qualidade, '#10b981']].map(([label, val, color]) => `
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:13px;color:#e2e8f0;font-weight:600">${label}</span>
+              <span style="font-size:14px;font-weight:800;color:${color}">${val}/100</span>
+            </div>
+            <div style="height:8px;background:#232740;border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${val}%;background:${color};border-radius:4px"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  setTimeout(() => {
+    destroyChart('chart-tradeoff-radar');
+    charts['tradeoff-radar'] = new ApexCharts(document.getElementById('chart-tradeoff-radar'), {
+      chart: { type: 'radar', height: 300, background: 'transparent', toolbar: { show: false } },
+      theme: { mode: 'dark' },
+      series: [{ name: p.nome, data: [t.custo, t.prazo, t.escopo, t.qualidade] }],
+      xaxis: { categories: ['Custo', 'Prazo', 'Escopo', 'Qualidade'] },
+      colors: [p.cor],
+      yaxis: { min: 0, max: 100, show: false },
+      fill: { opacity: 0.3 },
+      stroke: { width: 2 },
+      markers: { size: 5 },
+      grid: { show: false }
+    });
+    charts['tradeoff-radar'].render();
+  }, 100);
+}
+
+function buildBurndown() {
+  const p = currentProject;
+  const b = p.previsibilidade;
+  const prazoColor = b.percentual_prazo_cumprido >= 85 ? '#10b981' : b.percentual_prazo_cumprido >= 70 ? '#f59e0b' : '#ef4444';
+  document.getElementById('burndown-content').innerHTML = `
+    <div class="previsao-stats">
+      <div class="previsao-stat">
+        <div class="previsao-stat-val" style="color:${prazoColor}">${b.percentual_prazo_cumprido}%</div>
+        <div class="previsao-stat-label">Aderência ao Prazo</div>
+      </div>
+      <div class="previsao-stat">
+        <div class="previsao-stat-val" style="color:${b.desvio_medio_dias <= 3 ? '#10b981' : b.desvio_medio_dias <= 7 ? '#f59e0b' : '#ef4444'}">${b.desvio_medio_dias}d</div>
+        <div class="previsao-stat-label">Desvio Médio de Prazo</div>
+      </div>
+      <div class="previsao-stat">
+        <div class="previsao-stat-val" style="color:#6366f1">${p.sprints.length}</div>
+        <div class="previsao-stat-label">Sprints Realizados</div>
+      </div>
+      <div class="previsao-stat">
+        <div class="previsao-stat-val" style="color:#0ea5e9">${Math.round(p.sprints.reduce((s,sp) => s + sp.velocidade, 0) / p.sprints.length)}</div>
+        <div class="previsao-stat-label">Velocidade Média</div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="margin-bottom:16px">
+      <div class="chart-header"><div class="chart-title">Burndown Chart</div><div class="chart-sub">Trabalho restante: real vs ideal</div></div>
+      <div id="chart-burndown"></div>
+    </div>
+    <div class="section-title">Matriz de Riscos</div>
+    <div class="card">
+      <table class="risk-table">
+        <thead><tr><th>Risco</th><th>Probabilidade</th><th>Impacto</th><th>Mitigação</th></tr></thead>
+        <tbody>
+          ${b.riscos.map(r => `
+            <tr>
+              <td>${r.risco}</td>
+              <td><span class="risk-prob" style="color:${PROB_COLORS[r.probabilidade]};background:${PROB_COLORS[r.probabilidade]}22">${r.probabilidade}</span></td>
+              <td><span class="risk-prob" style="color:${PROB_COLORS[r.impacto] || '#8892b0'};background:${(PROB_COLORS[r.impacto] || '#8892b0')}22">${r.impacto}</span></td>
+              <td style="color:#8892b0">${r.mitigacao}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  setTimeout(() => {
+    const sprints = b.burndown.map((_, i) => 'S' + (i + 1));
+    destroyChart('chart-burndown');
+    charts['burndown'] = new ApexCharts(document.getElementById('chart-burndown'), {
+      chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: false } },
+      theme: { mode: 'dark' },
+      series: [
+        { name: 'Real', data: b.burndown },
+        { name: 'Ideal', data: b.burndown_ideal }
+      ],
+      xaxis: { categories: sprints, labels: { style: { colors: '#8892b0' } } },
+      yaxis: { labels: { style: { colors: '#8892b0' } }, title: { text: 'Pontos restantes', style: { color: '#8892b0' } } },
+      colors: [p.cor, '#2e3250'],
+      stroke: { width: [3, 2], dashArray: [0, 6] },
+      markers: { size: [5, 0] },
+      legend: { labels: { colors: '#8892b0' } },
+      grid: { borderColor: '#2e3250' },
+      fill: {
+        type: ['gradient', 'solid'],
+        gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.0, stops: [0, 100] }
+      }
+    });
+    charts['burndown'].render();
+  }, 100);
+}
+
+// START
+init();
+</script>
+</body>
+</html>

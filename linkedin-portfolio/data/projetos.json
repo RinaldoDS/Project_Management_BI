@@ -1,0 +1,384 @@
+{
+  "portfolio": {
+    "nome": "Portfólio de Projetos — Analista de TI",
+    "responsavel": "Analista de TI | QA | DevOps",
+    "periodo": "2024–2026",
+    "total_projetos": 5
+  },
+  "projetos": [
+    {
+      "id": "PRJ-001",
+      "nome": "Projeto Saindo do Zero",
+      "descricao": "Automação de testes E2E com Playwright + Cypress, pipeline CI/CD (Jenkins/Azure), cobertura de qualidade de aplicação web.",
+      "status": "Em Andamento",
+      "categoria": "QA & Automação",
+      "cor": "#6366f1",
+      "inicio": "2024-01-15",
+      "fim_previsto": "2026-06-30",
+      "progresso": 72,
+      "time": 3,
+      "tecnologias": ["Playwright", "Cypress", "Jenkins", "Azure DevOps", "Node.js", "SQLite"],
+      "wip": {
+        "backlog": 8,
+        "todo": 5,
+        "in_progress": 4,
+        "review": 2,
+        "done": 47,
+        "limite_wip": 5
+      },
+      "sprints": [
+        {"numero": 1, "planejado": 10, "entregue": 9, "velocidade": 9},
+        {"numero": 2, "planejado": 12, "entregue": 11, "velocidade": 11},
+        {"numero": 3, "planejado": 11, "entregue": 10, "velocidade": 10},
+        {"numero": 4, "planejado": 13, "entregue": 12, "velocidade": 12},
+        {"numero": 5, "planejado": 12, "entregue": 14, "velocidade": 14},
+        {"numero": 6, "planejado": 14, "entregue": 11, "velocidade": 11}
+      ],
+      "kpis": {
+        "cobertura_testes": 87,
+        "taxa_defeitos": 3.2,
+        "lead_time_dias": 4.5,
+        "cycle_time_dias": 2.1,
+        "throughput_semana": 6,
+        "deploy_freq_semana": 3,
+        "mttr_horas": 1.8,
+        "satisfacao_stakeholder": 92
+      },
+      "okrs": {
+        "objetivo": "Garantir qualidade total do pipeline de entrega de software",
+        "key_results": [
+          {"kr": "Cobertura de testes automatizados ≥ 85%", "meta": 85, "atual": 87, "status": "atingido"},
+          {"kr": "Reduzir tempo de build CI/CD para < 8 min", "meta": 8, "atual": 6.2, "status": "atingido"},
+          {"kr": "Zero bugs críticos em produção no trimestre", "meta": 0, "atual": 1, "status": "em_risco"},
+          {"kr": "100% dos testes de regressão automatizados", "meta": 100, "atual": 72, "status": "em_andamento"}
+        ]
+      },
+      "roi": {
+        "investimento_horas": 480,
+        "custo_hora": 80,
+        "custo_total": 38400,
+        "valor_gerado_estimado": 115200,
+        "roi_percentual": 200,
+        "bugs_evitados": 47,
+        "custo_bug_medio": 1800,
+        "economia_retrabalho": 84600
+      },
+      "tradeoff": {
+        "principal": "Qualidade vs. Velocidade",
+        "decisao": "Priorizou cobertura de testes em detrimento do prazo, garantindo estabilidade a longo prazo.",
+        "custo": 65,
+        "prazo": 55,
+        "escopo": 85,
+        "qualidade": 92
+      },
+      "previsibilidade": {
+        "percentual_prazo_cumprido": 83,
+        "desvio_medio_dias": 3,
+        "burndown": [66, 58, 49, 40, 32, 22, 14, 8, 3, 0],
+        "burndown_ideal": [66, 59, 53, 46, 40, 33, 26, 20, 13, 0],
+        "riscos": [
+          {"risco": "Complexidade de integração legado", "probabilidade": "Alta", "impacto": "Médio", "mitigacao": "Testes de contrato implementados"},
+          {"risco": "Rotatividade da equipe", "probabilidade": "Baixa", "impacto": "Alto", "mitigacao": "Documentação completa e pair programming"}
+        ]
+      }
+    },
+    {
+      "id": "PRJ-002",
+      "nome": "Artemis II",
+      "descricao": "Plataforma de monitoramento e análise de dados aeronáuticos com dashboards interativos, scraping automatizado e alertas em tempo real.",
+      "status": "Em Andamento",
+      "categoria": "Data & Analytics",
+      "cor": "#0ea5e9",
+      "inicio": "2024-06-01",
+      "fim_previsto": "2026-09-30",
+      "progresso": 54,
+      "time": 4,
+      "tecnologias": ["Python", "SQLite", "JavaScript", "HTML/CSS", "Playwright", "REST API"],
+      "wip": {
+        "backlog": 15,
+        "todo": 7,
+        "in_progress": 3,
+        "review": 2,
+        "done": 31,
+        "limite_wip": 4
+      },
+      "sprints": [
+        {"numero": 1, "planejado": 8, "entregue": 7, "velocidade": 7},
+        {"numero": 2, "planejado": 9, "entregue": 9, "velocidade": 9},
+        {"numero": 3, "planejado": 10, "entregue": 8, "velocidade": 8},
+        {"numero": 4, "planejado": 9, "entregue": 10, "velocidade": 10},
+        {"numero": 5, "planejado": 11, "entregue": 9, "velocidade": 9}
+      ],
+      "kpis": {
+        "cobertura_testes": 61,
+        "taxa_defeitos": 5.1,
+        "lead_time_dias": 6.8,
+        "cycle_time_dias": 3.4,
+        "throughput_semana": 4,
+        "deploy_freq_semana": 2,
+        "mttr_horas": 3.2,
+        "satisfacao_stakeholder": 88
+      },
+      "okrs": {
+        "objetivo": "Entregar plataforma de analytics aeronáutico com dados em tempo real",
+        "key_results": [
+          {"kr": "Dashboard com 100% das rotas ANAC mapeadas", "meta": 100, "atual": 74, "status": "em_andamento"},
+          {"kr": "Latência de atualização de dados < 5 min", "meta": 5, "atual": 4.2, "status": "atingido"},
+          {"kr": "Precisão dos alertas automáticos > 95%", "meta": 95, "atual": 91, "status": "em_risco"},
+          {"kr": "Uptime da plataforma ≥ 99.5%", "meta": 99.5, "atual": 98.7, "status": "em_risco"}
+        ]
+      },
+      "roi": {
+        "investimento_horas": 620,
+        "custo_hora": 80,
+        "custo_total": 49600,
+        "valor_gerado_estimado": 198400,
+        "roi_percentual": 300,
+        "horas_manuais_economizadas": 240,
+        "custo_hora_manual": 60,
+        "economia_processos": 14400
+      },
+      "tradeoff": {
+        "principal": "Escopo vs. Prazo",
+        "decisao": "Expandiu escopo para incluir análise histórica de 5 anos, impactando prazo original em +2 meses.",
+        "custo": 70,
+        "prazo": 45,
+        "escopo": 78,
+        "qualidade": 80
+      },
+      "previsibilidade": {
+        "percentual_prazo_cumprido": 68,
+        "desvio_medio_dias": 8,
+        "burndown": [85, 76, 69, 61, 55, 48, 41],
+        "burndown_ideal": [85, 75, 65, 55, 45, 35, 25],
+        "riscos": [
+          {"risco": "API externa ANAC instável", "probabilidade": "Média", "impacto": "Alto", "mitigacao": "Cache local e retry automático"},
+          {"risco": "Volume de dados maior que esperado", "probabilidade": "Alta", "impacto": "Médio", "mitigacao": "Paginação e indexação implementadas"}
+        ]
+      }
+    },
+    {
+      "id": "PRJ-003",
+      "nome": "Portal RH Digital",
+      "descricao": "Migração de sistema legado de RH para plataforma web moderna, com integração de folha de pagamento, ponto eletrônico e gestão de benefícios.",
+      "status": "Concluído",
+      "categoria": "Migração de Sistema",
+      "cor": "#10b981",
+      "inicio": "2023-03-01",
+      "fim_previsto": "2024-02-28",
+      "progresso": 100,
+      "time": 5,
+      "tecnologias": ["React", "Node.js", "PostgreSQL", "Docker", "REST API", "JWT"],
+      "wip": {
+        "backlog": 0,
+        "todo": 0,
+        "in_progress": 0,
+        "review": 0,
+        "done": 94,
+        "limite_wip": 6
+      },
+      "sprints": [
+        {"numero": 1, "planejado": 10, "entregue": 10, "velocidade": 10},
+        {"numero": 2, "planejado": 12, "entregue": 13, "velocidade": 13},
+        {"numero": 3, "planejado": 11, "entregue": 10, "velocidade": 10},
+        {"numero": 4, "planejado": 13, "entregue": 12, "velocidade": 12},
+        {"numero": 5, "planejado": 14, "entregue": 15, "velocidade": 15},
+        {"numero": 6, "planejado": 12, "entregue": 13, "velocidade": 13},
+        {"numero": 7, "planejado": 11, "entregue": 11, "velocidade": 11}
+      ],
+      "kpis": {
+        "cobertura_testes": 91,
+        "taxa_defeitos": 1.8,
+        "lead_time_dias": 3.2,
+        "cycle_time_dias": 1.5,
+        "throughput_semana": 8,
+        "deploy_freq_semana": 5,
+        "mttr_horas": 0.9,
+        "satisfacao_stakeholder": 96
+      },
+      "okrs": {
+        "objetivo": "Modernizar gestão de RH eliminando processos manuais",
+        "key_results": [
+          {"kr": "100% dos processos manuais automatizados", "meta": 100, "atual": 100, "status": "atingido"},
+          {"kr": "Reduzir tempo de fechamento de folha de 3 dias para 4h", "meta": 4, "atual": 3.5, "status": "atingido"},
+          {"kr": "Satisfação dos usuários RH > 90%", "meta": 90, "atual": 96, "status": "atingido"},
+          {"kr": "Zero incidentes de segurança de dados pessoais", "meta": 0, "atual": 0, "status": "atingido"}
+        ]
+      },
+      "roi": {
+        "investimento_horas": 840,
+        "custo_hora": 80,
+        "custo_total": 67200,
+        "valor_gerado_estimado": 403200,
+        "roi_percentual": 500,
+        "funcionarios_impactados": 450,
+        "horas_economizadas_mes": 180,
+        "economia_anual": 129600
+      },
+      "tradeoff": {
+        "principal": "Custo vs. Qualidade",
+        "decisao": "Investiu em testes e segurança mesmo ultrapassando budget em 12%, evitando incidentes de LGPD.",
+        "custo": 80,
+        "prazo": 90,
+        "escopo": 100,
+        "qualidade": 96
+      },
+      "previsibilidade": {
+        "percentual_prazo_cumprido": 94,
+        "desvio_medio_dias": 2,
+        "burndown": [94, 84, 71, 59, 47, 35, 22, 11, 3, 0],
+        "burndown_ideal": [94, 84, 74, 64, 54, 44, 34, 24, 14, 0],
+        "riscos": [
+          {"risco": "Resistência à mudança dos usuários", "probabilidade": "Alta", "impacto": "Médio", "mitigacao": "Treinamento e change management"},
+          {"risco": "Conformidade LGPD", "probabilidade": "Média", "impacto": "Crítico", "mitigacao": "DPO consultado, auditoria externa"}
+        ]
+      }
+    },
+    {
+      "id": "PRJ-004",
+      "nome": "DataLake Corporativo",
+      "descricao": "Implementação de pipeline de dados centralizado, ingestão de múltiplas fontes, transformação ETL e disponibilização para times de analytics.",
+      "status": "Em Andamento",
+      "categoria": "Data Engineering",
+      "cor": "#f59e0b",
+      "inicio": "2025-01-10",
+      "fim_previsto": "2026-12-31",
+      "progresso": 38,
+      "time": 3,
+      "tecnologias": ["Python", "Apache Airflow", "PostgreSQL", "Docker", "dbt", "Pandas"],
+      "wip": {
+        "backlog": 22,
+        "todo": 9,
+        "in_progress": 3,
+        "review": 1,
+        "done": 21,
+        "limite_wip": 4
+      },
+      "sprints": [
+        {"numero": 1, "planejado": 7, "entregue": 6, "velocidade": 6},
+        {"numero": 2, "planejado": 8, "entregue": 8, "velocidade": 8},
+        {"numero": 3, "planejado": 8, "entregue": 7, "velocidade": 7},
+        {"numero": 4, "planejado": 9, "entregue": 8, "velocidade": 8}
+      ],
+      "kpis": {
+        "cobertura_testes": 55,
+        "taxa_defeitos": 7.4,
+        "lead_time_dias": 9.2,
+        "cycle_time_dias": 4.8,
+        "throughput_semana": 3,
+        "deploy_freq_semana": 1,
+        "mttr_horas": 5.1,
+        "satisfacao_stakeholder": 79
+      },
+      "okrs": {
+        "objetivo": "Centralizar fontes de dados para tomada de decisão orientada a dados",
+        "key_results": [
+          {"kr": "Ingerir 15 fontes de dados distintas", "meta": 15, "atual": 7, "status": "em_andamento"},
+          {"kr": "Latência máxima de pipeline ETL de 2h", "meta": 2, "atual": 3.1, "status": "em_risco"},
+          {"kr": "Data quality score > 95% nas tabelas gold", "meta": 95, "atual": 87, "status": "em_andamento"},
+          {"kr": "Reduzir relatórios manuais em 80%", "meta": 80, "atual": 35, "status": "em_andamento"}
+        ]
+      },
+      "roi": {
+        "investimento_horas": 390,
+        "custo_hora": 80,
+        "custo_total": 31200,
+        "valor_gerado_estimado": 93600,
+        "roi_percentual": 200,
+        "relatorios_automatizados": 12,
+        "horas_analista_economizadas": 48,
+        "projecao_roi_12_meses": 375
+      },
+      "tradeoff": {
+        "principal": "Velocidade vs. Governança",
+        "decisao": "Adotou controles de qualidade de dados rigorosos, desacelerando ingestão para garantir confiabilidade.",
+        "custo": 55,
+        "prazo": 40,
+        "escopo": 55,
+        "qualidade": 87
+      },
+      "previsibilidade": {
+        "percentual_prazo_cumprido": 72,
+        "desvio_medio_dias": 11,
+        "burndown": [56, 50, 43, 36, 29],
+        "burndown_ideal": [56, 50, 44, 38, 32],
+        "riscos": [
+          {"risco": "Schema drift nas fontes legadas", "probabilidade": "Alta", "impacto": "Alto", "mitigacao": "Schema registry e testes de contrato"},
+          {"risco": "Capacidade do servidor insuficiente", "probabilidade": "Média", "impacto": "Alto", "mitigacao": "Auto-scaling configurado em Docker"}
+        ]
+      }
+    },
+    {
+      "id": "PRJ-005",
+      "nome": "App Mobile Vendas",
+      "descricao": "CRM mobile para equipe de vendas externas: gestão de leads, pipeline de oportunidades, geolocalização de clientes e relatórios de performance.",
+      "status": "Planejamento",
+      "categoria": "Mobile & CRM",
+      "cor": "#ec4899",
+      "inicio": "2026-02-01",
+      "fim_previsto": "2026-11-30",
+      "progresso": 15,
+      "time": 4,
+      "tecnologias": ["React Native", "Node.js", "MongoDB", "Firebase", "REST API", "GPS API"],
+      "wip": {
+        "backlog": 35,
+        "todo": 12,
+        "in_progress": 2,
+        "review": 0,
+        "done": 8,
+        "limite_wip": 5
+      },
+      "sprints": [
+        {"numero": 1, "planejado": 6, "entregue": 5, "velocidade": 5},
+        {"numero": 2, "planejado": 7, "entregue": 8, "velocidade": 8}
+      ],
+      "kpis": {
+        "cobertura_testes": 32,
+        "taxa_defeitos": 11.2,
+        "lead_time_dias": 14.5,
+        "cycle_time_dias": 7.2,
+        "throughput_semana": 2,
+        "deploy_freq_semana": 1,
+        "mttr_horas": 8.4,
+        "satisfacao_stakeholder": 74
+      },
+      "okrs": {
+        "objetivo": "Aumentar produtividade da força de vendas em 30%",
+        "key_results": [
+          {"kr": "App disponível em iOS e Android", "meta": 100, "atual": 20, "status": "em_andamento"},
+          {"kr": "Integrar 100% dos leads do Salesforce", "meta": 100, "atual": 0, "status": "em_andamento"},
+          {"kr": "Tempo de registro de visita < 2 min", "meta": 2, "atual": null, "status": "nao_iniciado"},
+          {"kr": "Adoção de 90% da força de vendas no mês 1", "meta": 90, "atual": null, "status": "nao_iniciado"}
+        ]
+      },
+      "roi": {
+        "investimento_horas": 180,
+        "custo_hora": 80,
+        "custo_total": 14400,
+        "valor_gerado_estimado": 86400,
+        "roi_percentual": 500,
+        "vendedores_impactados": 120,
+        "aumento_conversao_estimado": 15,
+        "projecao_receita_adicional": 840000
+      },
+      "tradeoff": {
+        "principal": "Prazo vs. Features",
+        "decisao": "MVP focado nas 3 features core (leads, pipeline, geo), integrações avançadas ficaram para v2.",
+        "custo": 45,
+        "prazo": 70,
+        "escopo": 40,
+        "qualidade": 65
+      },
+      "previsibilidade": {
+        "percentual_prazo_cumprido": 78,
+        "desvio_medio_dias": 5,
+        "burndown": [57, 52, 44],
+        "burndown_ideal": [57, 51, 45],
+        "riscos": [
+          {"risco": "Aprovação nas lojas Apple/Google", "probabilidade": "Média", "impacto": "Alto", "mitigacao": "Guidelines verificados desde o início"},
+          {"risco": "Conectividade offline dos vendedores", "probabilidade": "Alta", "impacto": "Crítico", "mitigacao": "Modo offline-first no backlog sprint 3"}
+        ]
+      }
+    }
+  ]
+}
