@@ -1,0 +1,9 @@
+# GitHub Linguist — controle de linguagens exibidas no repositório
+
+# Marca HTML como documentação (não conta no gráfico de linguagens)
+linkedin-portfolio/bi-dashboard/*.html linguist-documentation=true
+
+# Garante que estas linguagens sejam detectadas e exibidas
+linkedin-portfolio/scripts/*.py        linguist-detectable=true
+linkedin-portfolio/plane/*.yml         linguist-detectable=true
+linkedin-portfolio/data/*.json         linguist-detectable=true
